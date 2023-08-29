@@ -3,10 +3,11 @@ import bodyParser from 'body-parser';
 import https from 'https';
 import express from 'express';
 
-import postgreRouter from "@routes/postgre";
-import importRouter from "@routes/importXlsx";
+import rootRouter from "@routes/root";
+import actionsRouter from "@routes/doActions";
 import { ensureDir } from 'fs-extra';
 import { logger } from '@services/logger';
+import { auth } from 'middleware/auth';
 
 
 https.globalAgent.options.rejectUnauthorized = false;
@@ -29,11 +30,14 @@ app.use((err: any, _req: any, res: any, _next: any) => {
     error: err,
   });
 });
+app.use(auth)
+
 ensureDir('./logs/')
 ensureDir('./uploads/xlsx/')
 ensureDir('./uploads/tepdinhkem/')
-app.use('/import', importRouter)
-app.use('/postgre', postgreRouter)
+app.use(rootRouter)
+app.use('/action', actionsRouter)
+
 app.listen(9000, async () => {
   logger('startup').info("Server is up! http://0.0.0.0:9000");
 })

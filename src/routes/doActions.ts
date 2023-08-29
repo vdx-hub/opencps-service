@@ -1,7 +1,10 @@
+import { doAction } from '@services/opencps';
 import express from 'express';
+import { AuthenticatedRequest } from 'middleware/auth';
 import multer from 'multer';
 import path from 'path';
-var upload = multer({
+
+const upload = multer({
   storage: multer.diskStorage({
     destination: function (_req, file, cb) {
       if (file.fieldname === "file") {
@@ -22,8 +25,19 @@ var upload = multer({
     cb(null, true)
   },
 });
+
 const router = express.Router();
-router.post('/ping', upload.single('file'), async function (_req, res) {
-  res.status(200).send("Service is up and running!")
+
+router.post('/:actionCode/doAction', async function (req: AuthenticatedRequest, res) {
+  const token = req.token
+  let resOpencpsAction = await doAction({
+    actionCode: req.params.actionCode,
+    dossierId: req.body.dossierId,
+    actionNote: req.body.actionNote || '',
+    assignUsers: req.body.assignUsers || '',
+    payment: req.body.payment || '',
+    token
+  })
+  res.status(200).send(resOpencpsAction)
 })
 export default router
