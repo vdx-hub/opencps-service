@@ -4,7 +4,7 @@ import https from 'https';
 import express from 'express';
 
 import rootRouter from "@routes/root";
-import actionsRouter from "@routes/doActions";
+import actionsRouter from "@routes/action";
 import { ensureDir } from 'fs-extra';
 import { logger } from '@services/logger';
 import { auth } from 'middleware/auth';
