@@ -4,6 +4,7 @@ import https from 'https';
 import express from 'express';
 
 import rootRouter from "@routes/root";
+import filesRouter from "@routes/files";
 import actionsRouter from "@routes/action";
 import { ensureDir } from 'fs-extra';
 import { logger } from '@services/logger';
@@ -33,10 +34,10 @@ app.use((err: any, _req: any, res: any, _next: any) => {
 app.use(auth)
 
 ensureDir('./logs/')
-ensureDir('./uploads/xlsx/')
-ensureDir('./uploads/tepdinhkem/')
+ensureDir('./uploads/files/')
 app.use(rootRouter)
 app.use('/action', actionsRouter)
+app.use('/files', filesRouter)
 
 app.listen(9000, async () => {
   logger('startup').info("Server is up! http://0.0.0.0:9000");
